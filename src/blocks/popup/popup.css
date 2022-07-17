@@ -1,0 +1,24 @@
+.popup {
+  font-family: 'Inter', 'Helvetica Neue', Arial, sans-serif;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 100;
+  color: #000;
+  background: rgba(0, 0, 0, 0.5);
+  display: none;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  visibility: hidden;
+  opacity: 0;
+  transition: visibility 0s linear 0.3s, opacity 0.3s linear;
+}
+
+@media screen and (max-width: 540px) {
+  .popup {
+    padding-top: 123px;
+  }
+}

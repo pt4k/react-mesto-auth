@@ -1,0 +1,6 @@
+.element__caption {
+  color: #000000;
+  background-color: #ffffff;
+  display: flex;
+  border-radius: 0 0 10px 10px;
+}
