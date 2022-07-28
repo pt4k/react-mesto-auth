@@ -198,18 +198,18 @@ function App() {
 
   function onSignOut() {
     localStorage.removeItem('jwt');
-    history.push('/signin');
+    history.push('/sign-in');
+    setLoggedIn(false);
+    userData.email = '';
   }
 
   return (
     <div>
       <CurrentUserContext.Provider value={currentUser}>
         <Header
+          loggedIn={loggedIn}
           userEmail={userData.email}
           onSignOut={onSignOut}
-          textLink={'Выйти'}
-          headerButtonActiveClassName="header__button_active"
-          routeLink="signin"
         />
 
         <Switch>
@@ -227,11 +227,11 @@ function App() {
             cards={cards}
           />
 
-          <Route path="/signup">
+          <Route path="/sign-up">
             <Register onRegister={onRegister} />
           </Route>
 
-          <Route path="/signin">
+          <Route path="/sign-in">
             <Login onLogin={onLogin} />
           </Route>
         </Switch>
@@ -270,7 +270,7 @@ function App() {
         <ImagePopup card={selectedCard} onClose={closeAllPopups} />
 
         <Route>
-          {loggedIn ? <Redirect to="/" /> : <Redirect to="/signin" />}
+          {loggedIn ? <Redirect to="/" /> : <Redirect to="/sign-in" />}
         </Route>
       </CurrentUserContext.Provider>
     </div>

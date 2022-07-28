@@ -1,5 +1,4 @@
 import { useState } from 'react';
-import Header from './Header';
 import { Link, useHistory } from 'react-router-dom';
 
 const Register = ({ onRegister }) => {
@@ -12,13 +11,12 @@ const Register = ({ onRegister }) => {
     evt.preventDefault();
 
     onRegister({ email, password })
-      .then(() => history.push('/signin'))
+      .then(() => history.push('/sign-in'))
       .catch((err) => console.log(`Что-то пошло не так. Ошибка: ${err}`));
   };
 
   return (
     <div className="registration">
-      {<Header textLink="Войти" routeLink="signin" />}
       <h2 className="registration__title">Регистрация</h2>
       <form className="registration__form" noValidate onSubmit={handleSubmit}>
         <input
@@ -50,7 +48,7 @@ const Register = ({ onRegister }) => {
         <p className="registration__paragraph">
           Уже зарегистрированы?{' '}
           {
-            <Link className="registration__link" to="/signin">
+            <Link className="registration__link" to="/sign-in">
               Войти
             </Link>
           }
