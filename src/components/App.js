@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Switch, Route, Redirect } from 'react-router-dom';
+import { Switch, Route, Redirect, useHistory } from 'react-router-dom';
 import { CurrentUserContext } from '../contexts/CurrentUserContext';
 import Header from './Header';
 import Main from './Main';
@@ -14,6 +14,7 @@ import Register from './Register';
 import InfoTooltip from './InfoTooltip';
 import api from '../utils/api';
 import ProtectedRoute from './ProtectedRoute';
+import { register, authorize, getContent } from '../utils/auth';
 
 function App() {
   const [isEditAvatarPopupOpen, setIsOpenEditAvatar] = useState(false);
@@ -26,7 +27,8 @@ function App() {
   const [cards, setCards] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [loggedIn, setLoggedIn] = useState(false);
-
+  const [userData, setUserData] = useState({});
+  const history = useHistory();
   //функции открытия попапов
   const handleEditAvatar = () => {
     setIsOpenEditAvatar(true);
@@ -58,27 +60,31 @@ function App() {
 
   //получапем данные пользователя с сервера
   useEffect(() => {
-    api
-      .getUserInfo()
-      .then((res) => {
-        setCurrentUser(res);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  }, []);
+    if (loggedIn) {
+      api
+        .getUserInfo()
+        .then((res) => {
+          setCurrentUser(res);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    }
+  }, [loggedIn]);
 
   //получаем карточки с сервера
   useEffect(() => {
-    api
-      .getInitialCards()
-      .then((cardList) => {
-        setCards(cardList);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  }, []);
+    if (loggedIn) {
+      api
+        .getInitialCards()
+        .then((cardList) => {
+          setCards(cardList);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    }
+  }, [loggedIn]);
 
   //изменяем данные пользователя
   function handleUpdateUser(newInfo) {
@@ -147,13 +153,63 @@ function App() {
       });
   }
 
+  const auth = async (jwt) => {
+    const content = await getContent(jwt).then((res) => {
+      if (res) {
+        const { email, _id } = res.data;
+        setLoggedIn(true);
+        setUserData({
+          email,
+          _id,
+        });
+      }
+    });
+    return content;
+  };
+
+  useEffect(() => {
+    const jwt = localStorage.getItem('jwt');
+    if (jwt) {
+      auth(jwt);
+    }
+  }, [loggedIn]);
+
+  useEffect(() => {
+    if (loggedIn) {
+      history.push('/');
+    }
+  }, [loggedIn]);
+
+  const onLogin = ({ email, password }) => {
+    return authorize(email, password).then((res) => {
+      if (res.token) {
+        localStorage.setItem('jwt', res.token);
+        setLoggedIn(true);
+      }
+    });
+  };
+
+  const onRegister = ({ email, password }) => {
+    return register(email, password).then((res) => {
+      if (!res || res.statusCode === 400)
+        throw new Error('Что-то пошло не так');
+      return res;
+    });
+  };
+
+  function onSignOut() {
+    localStorage.removeItem('jwt');
+    history.push('/signin');
+  }
+
   return (
     <div>
       <CurrentUserContext.Provider value={currentUser}>
         <Header
-          textLink="Выйти"
-          userLogin="locbne@gmail.com"
-          headerLinkActiveClassName="header__link_active"
+          userEmail={userData.email}
+          onSignOut={onSignOut}
+          textLink={'Выйти'}
+          headerButtonActiveClassName="header__button_active"
           routeLink="signin"
         />
 
@@ -173,22 +229,11 @@ function App() {
           />
 
           <Route path="/signup">
-            <Register
-              textLink="Войти"
-              isLoading={isLoading}
-              loadingText="Регистрация..."
-              buttonText="Зарегистрироваться"
-              title="Регистрация"
-            />
+            <Register onRegister={onRegister} />
           </Route>
 
           <Route path="/signin">
-            <Login
-              isLoading={isLoading}
-              loadingText="Вход..."
-              buttonText="Войти"
-              title="Вход"
-            />
+            <Login onLogin={onLogin} />
           </Route>
         </Switch>
 

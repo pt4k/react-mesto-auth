@@ -1,12 +1,13 @@
-.header__link {
+.header__button {
   font-size: 18px;
   line-height: 1.22;
-  color: #ffffff;
-  text-decoration: none;
+  color: #fff;
+  background-color: #000;
+  border: none;
   margin-top: 51px;
   transition: opacity 0.2s ease;
 }
 
-.header__link:hover {
+.header__button:hover {
   opacity: 0.6;
 }
