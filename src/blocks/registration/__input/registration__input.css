@@ -12,3 +12,9 @@
   border-bottom: 2px solid #ccc;
   color: #fff;
 }
+
+@media screen and (max-width: 540px) {
+  .registration__input {
+    max-width: 260px;
+  }
+}

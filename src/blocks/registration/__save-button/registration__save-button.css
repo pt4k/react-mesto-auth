@@ -20,6 +20,7 @@
 
 @media screen and (max-width: 540px) {
   .registration__save-button {
+    max-width: 260px;
     margin-top: 173px;
   }
 }

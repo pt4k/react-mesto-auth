@@ -12,3 +12,9 @@
 .header__button:hover {
   opacity: 0.6;
 }
+
+@media screen and (max-width: 540px) {
+  .header__button {
+    margin: 34px 0 30px;
+  }
+}
