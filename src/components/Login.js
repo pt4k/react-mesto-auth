@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import { useHistory } from 'react-router-dom/cjs/react-router-dom.min';
-import Header from './Header';
 
 const Login = ({ onLogin }) => {
   const [email, setEmail] = useState('');
@@ -15,17 +14,14 @@ const Login = ({ onLogin }) => {
   const handleSubmit = (evt) => {
     evt.preventDefault();
 
-    onLogin({ email, password })
-      .then(() => {
-        history.push('/');
-        resetForm();
-      })
-      .catch((err) => console.log(err));
+    onLogin({ email, password }).then(() => {
+      history.push('/');
+      resetForm();
+    });
   };
 
   return (
     <div className="registration">
-      {<Header textLink="Регистрация" routeLink="signup" />}
       <h2 className="registration__title">Вход</h2>
       <form className="registration__form" noValidate onSubmit={handleSubmit}>
         <input

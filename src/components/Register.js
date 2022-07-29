@@ -1,5 +1,4 @@
 import { useState } from 'react';
-import Header from './Header';
 import { Link, useHistory } from 'react-router-dom';
 
 const Register = ({ onRegister }) => {
@@ -18,7 +17,6 @@ const Register = ({ onRegister }) => {
 
   return (
     <div className="registration">
-      {<Header textLink="Войти" routeLink="signin" />}
       <h2 className="registration__title">Регистрация</h2>
       <form className="registration__form" noValidate onSubmit={handleSubmit}>
         <input

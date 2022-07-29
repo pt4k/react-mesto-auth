@@ -13,21 +13,27 @@ import Login from './Login';
 import Register from './Register';
 import api from '../utils/api';
 import ProtectedRoute from './ProtectedRoute';
+import InfoTooltip from './InfoTooltip';
 import { register, authorize, getContent } from '../utils/auth';
+import iconRegister from '../images/Union.png';
+import iconFailed from '../images/Unionfailed.png';
 
 function App() {
   const [isEditAvatarPopupOpen, setIsOpenEditAvatar] = useState(false);
   const [isEditProfilePopupOpen, setIsOpenEditProfile] = useState(false);
   const [isAddPlacePopupOpen, setIsOpenAddPlace] = useState(false);
   const [isDeleteCardPopupOpen, setIsOpenDeleteCard] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [loggedIn, setLoggedIn] = useState(false);
+  const [isInfoTooltip, setIsInfoTooltip] = useState(false);
+  const [isLogin, setIsLogin] = useState(false);
   const [selectedCard, setSelectedCard] = useState({ name: '', link: '' });
   const [deletionСard, setDeletionCard] = useState({ name: '', link: '' });
   const [currentUser, setCurrentUser] = useState({});
-  const [cards, setCards] = useState([]);
-  const [isLoading, setIsLoading] = useState(false);
-  const [loggedIn, setLoggedIn] = useState(false);
   const [userData, setUserData] = useState({});
+  const [cards, setCards] = useState([]);
   const history = useHistory();
+
   //функции открытия попапов
   const handleEditAvatar = () => {
     setIsOpenEditAvatar(true);
@@ -46,6 +52,10 @@ function App() {
     setSelectedCard(card);
   };
 
+  const handleInfoTooltip = () => {
+    setIsInfoTooltip(true);
+  };
+
   //закртыть все попапы и сбросить инпуты
   const closeAllPopups = () => {
     setIsOpenEditAvatar(false);
@@ -55,6 +65,8 @@ function App() {
     setSelectedCard({ name: '', link: '' });
     setDeletionCard({ name: '', link: '' });
     setIsLoading(false);
+    setIsInfoTooltip(false);
+    setIsLogin(false);
   };
 
   //получапем данные пользователя с сервера
@@ -177,21 +189,33 @@ function App() {
     if (loggedIn) {
       history.push('/');
     }
-  });
+  }, [loggedIn]);
+
+  console.log(loggedIn);
 
   const onLogin = ({ email, password }) => {
-    return authorize(email, password).then((res) => {
-      if (res.token) {
-        localStorage.setItem('jwt', res.token);
-        setLoggedIn(true);
-      }
-    });
+    return authorize(email, password)
+      .then((res) => {
+        if (res.token) {
+          localStorage.setItem('jwt', res.token);
+          setLoggedIn(true);
+        }
+      })
+      .catch((err) => {
+        handleInfoTooltip();
+        setIsLogin(false);
+        console.log(err);
+      });
   };
 
   const onRegister = ({ email, password }) => {
     return register(email, password).then((res) => {
       if (!res || res.statusCode === 400)
         throw new Error('Что-то пошло не так');
+      if (res) {
+        handleInfoTooltip();
+        setIsLogin(true);
+      }
       return res;
     });
   };
@@ -199,17 +223,17 @@ function App() {
   function onSignOut() {
     localStorage.removeItem('jwt');
     history.push('/signin');
+    setLoggedIn(false);
+    userData.email = '';
   }
 
   return (
     <div>
       <CurrentUserContext.Provider value={currentUser}>
         <Header
+          loggedIn={loggedIn}
           userEmail={userData.email}
           onSignOut={onSignOut}
-          textLink={'Выйти'}
-          headerButtonActiveClassName="header__button_active"
-          routeLink="signin"
         />
 
         <Switch>
@@ -228,7 +252,10 @@ function App() {
           />
 
           <Route path="/signup">
-            <Register onRegister={onRegister} />
+            <Register
+              onRegister={onRegister}
+              onInfoTooltip={handleInfoTooltip}
+            />
           </Route>
 
           <Route path="/signin">
@@ -268,6 +295,17 @@ function App() {
         />
 
         <ImagePopup card={selectedCard} onClose={closeAllPopups} />
+
+        <InfoTooltip
+          isOpen={isInfoTooltip}
+          onClose={closeAllPopups}
+          title={
+            isLogin
+              ? 'Вы успешно зарегистрировались!'
+              : 'Что-то пошло не так! Попробуйте ещё раз.'
+          }
+          icon={isLogin ? iconRegister : iconFailed}
+        />
 
         <Route>
           {loggedIn ? <Redirect to="/" /> : <Redirect to="/signin" />}
