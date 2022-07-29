@@ -66,7 +66,6 @@ function App() {
     setDeletionCard({ name: '', link: '' });
     setIsLoading(false);
     setIsInfoTooltip(false);
-    setIsLogin(false);
   };
 
   //получапем данные пользователя с сервера
@@ -190,8 +189,6 @@ function App() {
       history.push('/');
     }
   }, [loggedIn]);
-
-  console.log(loggedIn);
 
   const onLogin = ({ email, password }) => {
     return authorize(email, password)

@@ -17,3 +17,9 @@
 .registration__save-button:hover {
   opacity: 0.8;
 }
+
+@media screen and (max-width: 540px) {
+  .registration__save-button {
+    margin-top: 173px;
+  }
+}
