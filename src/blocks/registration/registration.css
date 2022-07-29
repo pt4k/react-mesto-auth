@@ -5,3 +5,9 @@
   color: #fff;
   background: rgba(0, 0, 0, 0.5);
 }
+
+@media screen and (max-width: 540px) {
+  .registration {
+    max-width: 320px;
+  }
+}
