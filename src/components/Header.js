@@ -1,5 +1,5 @@
 import logoPath from '../images/Vector.svg';
-import { Route, Link } from 'react-router-dom';
+import { Switch, Route, Link } from 'react-router-dom';
 
 function Header({ onSignOut, loggedIn, userEmail }) {
   return (
@@ -13,16 +13,18 @@ function Header({ onSignOut, loggedIn, userEmail }) {
         {loggedIn ? 'Выйти' : ' '}
       </button>
 
-      <Route path="/signup">
-        <Link className="header__button" to="signin">
-          Войти
-        </Link>
-      </Route>
-      <Route path="/signin">
-        <Link className="header__button" to="signup">
-          Регистрация
-        </Link>
-      </Route>
+      <Switch>
+        <Route path="/signup">
+          <Link className="header__button" to="signin">
+            Войти
+          </Link>
+        </Route>
+        <Route path="/signin">
+          <Link className="header__button" to="signup">
+            Регистрация
+          </Link>
+        </Route>
+      </Switch>
     </header>
   );
 }

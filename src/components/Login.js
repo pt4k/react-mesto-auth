@@ -1,10 +1,8 @@
 import { useState } from 'react';
-import { useHistory } from 'react-router-dom/cjs/react-router-dom.min';
 
 const Login = ({ onLogin }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const history = useHistory();
 
   const resetForm = () => {
     setEmail('');
@@ -15,7 +13,6 @@ const Login = ({ onLogin }) => {
     evt.preventDefault();
 
     onLogin({ email, password }).then(() => {
-      history.push('/');
       resetForm();
     });
   };
@@ -23,7 +20,7 @@ const Login = ({ onLogin }) => {
   return (
     <div className="registration">
       <h2 className="registration__title">Вход</h2>
-      <form className="registration__form" noValidate onSubmit={handleSubmit}>
+      <form className="registration__form" onSubmit={handleSubmit}>
         <input
           className="registration__input registration__input_el_e-mail"
           type="email"

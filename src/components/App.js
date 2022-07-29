@@ -144,9 +144,14 @@ function App() {
     const isLiked = card.likes.some((i) => i._id === currentUser._id);
 
     // Отправляем запрос в API и получаем обновлённые данные карточки
-    api.changeLikeCardStatus(card._id, !isLiked).then((newCard) => {
-      setCards((state) => state.map((c) => (c._id === card._id ? newCard : c)));
-    });
+    api
+      .changeLikeCardStatus(card._id, !isLiked)
+      .then((newCard) => {
+        setCards((state) =>
+          state.map((c) => (c._id === card._id ? newCard : c))
+        );
+      })
+      .catch((err) => console.log(err));
   }
 
   //удалить карточку
@@ -174,6 +179,7 @@ function App() {
         });
       }
     });
+
     return content;
   };
 
@@ -200,26 +206,34 @@ function App() {
       })
       .catch((err) => {
         handleInfoTooltip();
+        setLoggedIn(false);
         setIsLogin(false);
         console.log(err);
       });
   };
 
   const onRegister = ({ email, password }) => {
-    return register(email, password).then((res) => {
-      if (!res || res.statusCode === 400)
-        throw new Error('Что-то пошло не так');
-      if (res) {
-        handleInfoTooltip();
+    return register(email, password)
+      .then((res) => {
+        const { email, _id } = res.data;
+        setUserData({
+          email,
+          _id,
+        });
+
         setIsLogin(true);
-      }
-      return res;
-    });
+        handleInfoTooltip();
+        setLoggedIn(true);
+      })
+      .catch((err) => {
+        handleInfoTooltip();
+        setIsLogin(false);
+        console.log(err);
+      });
   };
 
   function onSignOut() {
     localStorage.removeItem('jwt');
-    history.push('/signin');
     setLoggedIn(false);
     userData.email = '';
   }
@@ -249,10 +263,7 @@ function App() {
           />
 
           <Route path="/signup">
-            <Register
-              onRegister={onRegister}
-              onInfoTooltip={handleInfoTooltip}
-            />
+            <Register onRegister={onRegister} />
           </Route>
 
           <Route path="/signin">
