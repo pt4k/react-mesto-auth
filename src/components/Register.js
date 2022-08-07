@@ -1,24 +1,19 @@
 import { useState } from 'react';
-import { Link, useHistory } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 
 const Register = ({ onRegister }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
-  const history = useHistory();
-
   const handleSubmit = (evt) => {
     evt.preventDefault();
-
-    onRegister({ email, password })
-      .then(() => history.push('/'))
-      .catch((err) => console.log(`Что-то пошло не так. Ошибка: ${err}`));
+    onRegister({ email, password });
   };
 
   return (
     <div className="registration">
       <h2 className="registration__title">Регистрация</h2>
-      <form className="registration__form" noValidate onSubmit={handleSubmit}>
+      <form className="registration__form" onSubmit={handleSubmit}>
         <input
           className="registration__input registration__input_el_e-mail"
           type="email"
