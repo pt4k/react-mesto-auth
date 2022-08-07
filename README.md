@@ -18,4 +18,4 @@ ___
 Для запуска проекта требуется ввести команду npm start в терминале
 ___
 
-[Ссылка на проектную работу](https://github.com/pt4k/react-mesto-auth)
+[Ссылка на проектную работу](https://pt4k.github.io/react-mesto-auth/)
