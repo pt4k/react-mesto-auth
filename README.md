@@ -7,7 +7,7 @@ ___
 Регистрация и аутентификация пользователя, редактирование аватара, счётчик лайков, удалять возможно только те карточки которые были добавлены пользователем.
 
 #### Технологии:
-HTML, CSS, JavaScript, React.js, API, Адаптивная вёрстка, ООП, функциональное программирование, Git, Figma.
+HTML, CSS, JavaScript, React.js, registration-forms, react-router-dom, react-components, react-context, react-hooks, API, Адаптивная вёрстка, ООП, функциональное программирование, Git, Figma.
 
 ___
 
